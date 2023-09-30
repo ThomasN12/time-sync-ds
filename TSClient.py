@@ -15,7 +15,7 @@ localTime = time.time()
 clientSocket.send(str(localTime).encode())
 
 adjustedTime = float(clientSocket.recv(bufferSize).decode())
-timeDifference = adjustedTime - localTime
+# timeDifference = adjustedTime - localTime
 
 RTT_ESTIMATE = (endTime - startTime) * 1000  # Convert seconds to milliseconds
 
