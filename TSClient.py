@@ -1,18 +1,26 @@
 from socket import *
 import time
+import sys
 
-SERVER_NAME = 'localhost'  # Change to your server's IP when testing on a remote server
-SERVER_PORT = 12000
-BUFFER_SIZE = 1024
+serverName = sys.argv[1] if len(sys.argv) > 1 else 'localhost'
+serverPort = 101234  # Update this to match your student ID port
+bufferSize = 1024
 
 clientSocket = socket(AF_INET, SOCK_STREAM)
-clientSocket.connect((SERVER_NAME, SERVER_PORT))
+startTime = time.time()
+clientSocket.connect((serverName, serverPort))
+endTime = time.time()
 
-local_time = time.time()
-clientSocket.send(str(local_time).encode())
+localTime = time.time()
+clientSocket.send(str(localTime).encode())
 
-adjusted_time = float(clientSocket.recv(BUFFER_SIZE).decode())
-time_difference = adjusted_time - local_time
-print(f"Time Difference from Server: {time_difference}")
+adjustedTime = float(clientSocket.recv(bufferSize).decode())
+timeDifference = adjustedTime - localTime
+
+RTT_ESTIMATE = (endTime - startTime) * 1000  # Convert seconds to milliseconds
+
+print(f"REMOTE_TIME {adjustedTime:.0f}")
+print(f"LOCAL_TIME {localTime:.0f}")
+print(f"RTT_ESTIMATE {RTT_ESTIMATE:.0f}")
 
 clientSocket.close()

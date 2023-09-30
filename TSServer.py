@@ -3,33 +3,35 @@ import time
 import threading
 
 # Constants
-SERVER_PORT = 12000
-BUFFER_SIZE = 1024
+studentId = 1234  # Change to your last 4 digits of student ID
+serverPort = 10000 + studentId
+bufferSize = 1024
 clients = []
 
 
-def handle_client(connectionSocket):
-    client_time = float(connectionSocket.recv(BUFFER_SIZE).decode())
-    clients.append(client_time)
+def handleClient(connectionSocket):
+    clientTime = float(connectionSocket.recv(bufferSize).decode())
+    clients.append(clientTime)
 
     # Sleep to simulate processing and wait for potential other clients
     time.sleep(5)
 
-    avg_difference = (sum(clients) - len(clients) * time.time()) / len(clients)
-    adjusted_time = time.time() + avg_difference
+    avgDifference = (sum(clients) - len(clients) * time.time()) / len(clients)
+    adjustedTime = time.time() + avgDifference
 
-    connectionSocket.send(str(adjusted_time).encode())
+    connectionSocket.send(str(adjustedTime).encode())
     connectionSocket.close()
 
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('', SERVER_PORT))
+serverSocket.bind(('', serverPort))
 serverSocket.listen(5)
 
-print("TSServer is waiting for client connections...")
+print(
+    f"TSServer is listening on port {serverPort} and waiting for client connections...")
 
 while True:
     connectionSocket, addr = serverSocket.accept()
-    client_thread = threading.Thread(
-        target=handle_client, args=(connectionSocket,))
-    client_thread.start()
+    clientThread = threading.Thread(
+        target=handleClient, args=(connectionSocket,))
+    clientThread.start()
