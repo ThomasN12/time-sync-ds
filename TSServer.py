@@ -16,20 +16,27 @@ def handleClient(connectionSocket):
     # Sleep to simulate processing and wait for potential other clients
     time.sleep(5)
 
-    avgDifference = (sum(clients) - len(clients) * time.time()) / len(clients)  #  DOUBLE-CHECK
-    adjustedTime = time.time() + avgDifference
-
-    connectionSocket.send(str(adjustedTime).encode())
+    # avgDifference = sum(clients) / len(clients) - time.time()
+    # adjustedTime = time.time() + avgDifference
+    adjustedTime = sum(clients) / len(clients)
+    msg = f"ADJUSTED TIME:{adjustedTime}"
+    connectionSocket.send(msg.encode())
     connectionSocket.close()
 
 
-serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('', serverPort))
-serverSocket.listen(5)
+def main():
 
-print(f"TSServer is listening on port {serverPort} and waiting for client connections...")
+    serverSocket = socket(AF_INET, SOCK_STREAM)
+    serverSocket.bind(('', serverPort))
+    serverSocket.listen(5)
 
-while True:
-    connectionSocket, addr = serverSocket.accept()
-    clientThread = threading.Thread(target=handleClient, args=(connectionSocket,))
-    clientThread.start()
+    print(f"TSServer is listening on port {serverPort} and waiting for client connections...")
+    while True:
+        connectionSocket, addr = serverSocket.accept()
+        clientThread = threading.Thread(
+            target=handleClient, args=(connectionSocket,))
+        clientThread.start()
+
+
+if __name__ == "__main__":
+    main()
