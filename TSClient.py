@@ -19,14 +19,14 @@ def main():
             received_msg = clientSocket.recv(bufferSize).decode()
             if "ADJUSTED TIME" in received_msg:
                 timeReceived = time.time()
-                localTime = time.time() * 1000
+                localTime = time.time()
                 adjustedTime = float(received_msg.split(":")[1])
                 # timeDifference = adjustedTime - localTime
 
                 rttEstimate = (timeReceived - timeSent) * 1000
 
-                print(f"REMOTE_TIME {adjustedTime:.0f}")
-                print(f"LOCAL_TIME {localTime:.0f}")
+                print(f"REMOTE_TIME {adjustedTime*1000:.0f}")
+                print(f"LOCAL_TIME {localTime*1000:.0f}")
                 print(f"RTT_ESTIMATE {rttEstimate:.0f}")
             else:
                 break

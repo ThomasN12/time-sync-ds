@@ -14,11 +14,13 @@ def handleClient(connectionSocket):
     clients.append(clientTime)
 
     # Sleep to simulate processing and wait for potential other clients
-    time.sleep(5)
+    # time.sleep(5)
 
     # avgDifference = sum(clients) / len(clients) - time.time()
     # adjustedTime = time.time() + avgDifference
-    adjustedTime = sum(clients) / len(clients)
+    curTime = time.time()
+    avgDifference = (sum(clients) - curTime * len(clients)) / len(clients)
+    adjustedTime = curTime + avgDifference
     msg = f"ADJUSTED TIME:{adjustedTime}"
     connectionSocket.send(msg.encode())
     connectionSocket.close()
@@ -28,7 +30,7 @@ def main():
 
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.bind(('', serverPort))
-    serverSocket.listen(5)
+    serverSocket.listen(1)
 
     print(f"TSServer is listening on port {serverPort} and waiting for client connections...")
     while True:
