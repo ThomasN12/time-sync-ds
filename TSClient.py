@@ -7,33 +7,36 @@ studentId = 1234
 serverPort = 10000 + studentId
 bufferSize = 1024
 
+
 def main():
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((serverName, serverPort))
 
-    # t0: Client's timestamp when sending the request
-    t0 = time.time()
-    clientSocket.send("Time request".encode())
+    # Timestamp when client send request
+    t1 = time.time()
+    clientSocket.send("Sending request for time...".encode())
 
-    # Get server's response and parse t1 and t2
+    # Retrieve timestamps from server
     message = clientSocket.recv(bufferSize).decode()
-    t1, t2 = map(float, message.split(','))
-    
-    # t3: Client's timestamp when receiving the server's response
-    t3 = time.time()
+    t2 = float(message.split(",")[0])
+    t3 = float(message.split(",")[1])
 
-    # Calculate RTT and offset using NTP formulas
-    rtt = (t3 - t0) - (t2 - t1)
-    offset = ((t1 - t0) + (t2 - t3)) / 2
+    # Timestamp when client receive response from server
+    t4 = time.time()
 
-    # Adjust the client's time (for the purpose of this assignment, we're just calculating the adjusted time)
-    adjusted_time = t3 + offset
+    # RTT & Offset calculation
+    rtt = (t4 - t1) - (t3 - t2)
+    offset = ((t2 - t1) + (t3 - t4)) / 2
 
-    print(f"REMOTE_TIME {adjusted_time*1000:.0f}")
-    print(f"LOCAL_TIME {t3*1000:.0f}")
-    print(f"RTT_ESTIMATE {rtt*1000:.0f}")
+    # Adjust the client's time
+    adjustedTime = t4 + offset
+
+    print(f"REMOTE_TIME {adjustedTime * 1000:.0f}")
+    print(f"LOCAL_TIME {t4 * 1000:.0f}")
+    print(f"RTT_ESTIMATE {rtt * 1000:.0f}")
 
     clientSocket.close()
+
 
 if __name__ == "__main__":
     main()

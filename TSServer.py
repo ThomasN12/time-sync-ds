@@ -1,9 +1,23 @@
 from socket import *
 import time
+import threading
 
 studentId = 1234
 serverPort = 10000 + studentId
 bufferSize = 1024
+
+
+def handleClient(connectionSocket):
+    # Message reception timestamp
+    recv_time = time.time()
+
+    # Sleep to simulate processing and wait for potential other clients
+    # time.sleep(5)
+
+    # Server's reply timestamp
+    connectionSocket.send(f"{recv_time},{time.time()}".encode())
+    connectionSocket.close()
+
 
 def main():
     serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -13,15 +27,10 @@ def main():
 
     while True:
         connectionSocket, addr = serverSocket.accept()
-        
-        # t1: Server's timestamp when the request is received
-        t1 = time.time()
-        
-        # t2: Server's timestamp when sending the reply
-        t2 = time.time()
-        message = f"{t1},{t2}"
-        connectionSocket.send(message.encode())
-        connectionSocket.close()
+        clientThread = threading.Thread(
+            target=handleClient, args=(connectionSocket))
+        clientThread.start()
+
 
 if __name__ == "__main__":
     main()
