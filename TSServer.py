@@ -8,6 +8,8 @@ bufferSize = 1024
 
 
 def handleClient(connectionSocket):
+    message = connectionSocket.recv(bufferSize).decode()
+    print(message)
     # Message reception timestamp
     recv_time = time.time()
 
@@ -28,7 +30,7 @@ def main():
     while True:
         connectionSocket, addr = serverSocket.accept()
         clientThread = threading.Thread(
-            target=handleClient, args=(connectionSocket))
+            target=handleClient, args=(connectionSocket,))
         clientThread.start()
 
 

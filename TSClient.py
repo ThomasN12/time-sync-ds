@@ -6,6 +6,7 @@ serverName = sys.argv[1] if len(sys.argv) > 1 else 'localhost'
 studentId = 1234
 serverPort = 10000 + studentId
 bufferSize = 1024
+timeRequestMessage = "Requesting time..."
 
 
 def main():
@@ -14,7 +15,7 @@ def main():
 
     # Timestamp when client send request
     t1 = time.time()
-    clientSocket.send("Sending request for time...".encode())
+    clientSocket.send(timeRequestMessage.encode())
 
     # Retrieve timestamps from server
     message = clientSocket.recv(bufferSize).decode()
@@ -31,10 +32,9 @@ def main():
     # Adjust the client's time
     adjustedTime = t4 + offset
 
-    print(f"REMOTE_TIME {adjustedTime * 1000:.0f}")
-    print(f"LOCAL_TIME {t4 * 1000:.0f}")
-    print(f"RTT_ESTIMATE {rtt * 1000:.0f}")
-
+    print(f"REMOTE_TIME {int(adjustedTime * 1000)}")
+    print(f"LOCAL_TIME {int(t4 * 1000)}")
+    print(f"RTT_ESTIMATE {int(rtt * 1000)}")
     clientSocket.close()
 
 
